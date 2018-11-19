@@ -40,6 +40,29 @@ class BooksApp extends React.Component {
     }));
   };
 
+  moveBook = (book, shelf) => {
+    if(book.shelf !== shelf){
+      BooksAPI.update(book, shelf)
+        .then((books) => {
+          if(shelf === 'none') { 
+            this.setState((currentState) => ({
+              [book.shelf]: currentState[book.shelf].filter((b) => {
+                return b.id !== book.id
+              }),
+            }));
+            
+          } else {
+            this.setState((currentState) => ({
+              [shelf]: currentState[shelf].concat([book]),
+              [book.shelf]: currentState[book.shelf].filter((b) => {
+                return b.id !== book.id
+              }),
+            }));
+          }
+        });
+    }
+  };
+
   render() {
     return (
       <div className="app">
@@ -58,7 +81,7 @@ class BooksApp extends React.Component {
                     <ol className="books-grid">
                       {this.state.currentlyReading.map((book) => (
                         <li>
-                          <Book book={book} />
+                          <Book book={book} onMoveBook={this.moveBook}/>
                         </li>
                        ))} 
                     </ol>
@@ -70,7 +93,7 @@ class BooksApp extends React.Component {
                     <ol className="books-grid">
                       {this.state.wantToRead.map((book) => (
                         <li>
-                          <Book book={book} />
+                          <Book book={book} onMoveBook={this.moveBook}/>
                         </li>
                        ))}
                     </ol>
@@ -82,7 +105,7 @@ class BooksApp extends React.Component {
                     <ol className="books-grid">
                       {this.state.read.map((book) => (
                         <li>
-                          <Book book={book} />
+                          <Book book={book} onMoveBook={this.moveBook}/>
                         </li>
                        ))}
                     </ol>
