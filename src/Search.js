@@ -15,13 +15,20 @@ class Search extends Component {
       query: query.trim()
     }));
     
-    const q = this.state.query;
-    BooksAPI.search(q, 100)
-      .then((books) => {
-        this.setState(() => ({
-          books
-        }))
-    });
+    if ( query.length > 0) {
+      BooksAPI.search(query, 100)
+        .then((bookRes) => {
+          const bookList = bookRes ? bookRes : [];
+          const books = bookList.error ? [] : bookList;
+          this.setState(() => ({
+            books
+          }));
+        });
+    } else {
+      this.setState(() => ({
+        books: []
+      }));
+    }
   }
   render() {
     return (
@@ -46,7 +53,7 @@ class Search extends Component {
         <div className="search-books-results">
           <ol className="books-grid">
             {this.state.books.map((book) => (
-              <Book book={book} />
+              <Book book={book} onMoveBook={this.props.onMoveBook} key={book.id}/>
             ))}
           </ol>
         </div>

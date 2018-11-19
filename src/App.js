@@ -67,7 +67,7 @@ class BooksApp extends React.Component {
     return (
       <div className="app">
         {this.state.showSearchPage ? (
-         <Search onCloseSearchPage={this.closeSearchPage} />
+         <Search onCloseSearchPage={this.closeSearchPage} onMoveBook={this.moveBook} />
         ) : (
           <div className="list-books">
             <div className="list-books-title">
@@ -80,7 +80,7 @@ class BooksApp extends React.Component {
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                       {this.state.currentlyReading.map((book) => (
-                        <li>
+                        <li key={book.id}>
                           <Book book={book} onMoveBook={this.moveBook}/>
                         </li>
                        ))} 
@@ -92,7 +92,7 @@ class BooksApp extends React.Component {
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                       {this.state.wantToRead.map((book) => (
-                        <li>
+                        <li key={book.id}>
                           <Book book={book} onMoveBook={this.moveBook}/>
                         </li>
                        ))}
@@ -104,7 +104,7 @@ class BooksApp extends React.Component {
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                       {this.state.read.map((book) => (
-                        <li>
+                        <li key={book.id}>
                           <Book book={book} onMoveBook={this.moveBook}/>
                         </li>
                        ))}
