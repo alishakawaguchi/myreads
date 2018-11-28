@@ -12,17 +12,36 @@ class Search extends Component {
 
   handleSearch = query => {
     this.setState(() => ({
-      query: query.trim()
+      query: query
     }));
     
     if ( query.length > 0) {
       BooksAPI.search(query, 100)
         .then((bookRes) => {
           const bookList = bookRes ? bookRes : [];
-          const books = bookList.error ? [] : bookList;
-          this.setState(() => ({
-            books
-          }));
+          let books = bookList.error ? [] : bookList;
+          if ( books.length > 0 ) {
+            BooksAPI.getAll()
+              .then((userBooks) => {
+                let usersDict = {};
+                userBooks.forEach(function(book) {
+                  usersDict[book.id] = book.shelf;
+                });
+              
+                books = books.map((book) => {
+                  if (book.id in usersDict) {
+                    book.shelf = usersDict[book.id];
+                  } else {
+                    book.shelf = 'none';
+                  }
+                  return book;
+                })
+                  
+                this.setState(() => ({
+                  books: books
+                }));
+            });
+          }
         });
     } else {
       this.setState(() => ({
